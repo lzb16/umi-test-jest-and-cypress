@@ -1,0 +1,60 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi generate tmp",
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "pretest:cy": "rm -rf cypress-coverage || true",
+    "test:cy": "cypress run",
+    "posttest:cy": "rm -rf .nyc_output || true",
+    "pretest:jest": "rm -rf jest-coverage || true",
+    "test:jest": "umi-test --coverage",
+    "cy:open": "cypress open",
+    "pretest": "rm -rf .nyc_output coverage || true",
+    "test": "yarn test:jest && yarn test:cy",
+    "posttest": "yarn report:combined",
+    "precopy:reports": "mkdir reports || true",
+    "copy:reports": "cp cypress-coverage/coverage-final.json reports/from-cypress.json && cp jest-coverage/coverage-final.json reports/from-jest.json",
+    "precombine:reports": "yarn copy:reports && mkdir .nyc_output || true",
+    "combine:reports": "nyc merge reports && mv coverage.json .nyc_output/out.json",
+    "prereport:combined": "npm run combine:reports",
+    "report:combined": "nyc report --reporter lcov --reporter text --reporter text-summary --report-dir coverage"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,less,md,json}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write"
+    ]
+  },
+  "dependencies": {
+    "@ant-design/pro-layout": "^6.5.0",
+    "react": "17.x",
+    "react-dom": "17.x",
+    "umi": "^3.5.23"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@cypress/code-coverage": "^3.9.12",
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@types/jest": "^26.0.24",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@umijs/preset-react": "1.x",
+    "@umijs/test": "^3.5.23",
+    "babel-plugin-istanbul": "^6.1.1",
+    "cypress": "^9.5.4",
+    "lint-staged": "^10.0.7",
+    "prettier": "^2.2.0",
+    "source-map-support": "^0.5.21",
+    "typescript": "^4.1.2",
+    "yorkie": "^2.0.0"
+  }
+}
